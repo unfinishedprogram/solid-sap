@@ -11,6 +11,7 @@ interface IRequestError {
 export default class RequestHandler {
   private base_url:string;
   private game_version: number = 18;
+  public authToken = "";
 
   set gameVersion(game_version:number) {
     this.game_version = game_version;
@@ -32,21 +33,26 @@ export default class RequestHandler {
     })
   }
 
-  private async executeFetch(url:string, body:any) {
-    return fetch(url, {
-      "headers": {
-        "accept": "*/*",
-        "accept-language": "en-US,en;q=0.9",
-        "cache-control": "no-cache",
-        "content-type": "application/json; utf-8",
-        "pragma": "no-cache",
-        "sec-fetch-dest": "empty",
-        "sec-fetch-mode": "cors",
-        "sec-fetch-site": "cross-site",
-        "sec-gpc": "1"
-      },
-      "body": JSON.stringify(body),
-      "method": "POST",
-    });
+  private async executeFetch(url:string, body_content:any) {
+
+    const headers = {
+      "accept": "*/*",
+      "accept-language": "en-US,en;q=0.9",
+      "cache-control": "no-cache",
+      "content-type": "application/json; utf-8",
+      "pragma": "no-cache",
+      "sec-fetch-dest": "empty",
+      "sec-fetch-mode": "cors",
+      "sec-fetch-site": "cross-site",
+      "sec-gpc": "1",
+    };
+    const method = "POST"
+    const body = JSON.stringify(body_content);
+
+    if(this.authToken) { 
+      headers["authorization"] = `Bearer ${this.authToken}`
+    }
+
+    return fetch(url, {headers, body, method});
   }
 }

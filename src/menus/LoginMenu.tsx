@@ -31,7 +31,9 @@ const LoginMenu:Component<MenuProps> = (props) => {
     setError("")
     setLoading(true)
     requestHandler.executeRequest(RegisterGuest, {})
-      .then(props.state.setAccountInfo)
+      .then(() => {
+
+      })
       .catch(handleError)
       .finally(() => setLoading(false))
     console.log("GuestLogin")

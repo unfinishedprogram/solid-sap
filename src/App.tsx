@@ -1,7 +1,7 @@
 import { Component, createEffect, createMemo, createSignal } from 'solid-js';
+import { requestHandler } from '.';
 import createGameState, { GameState } from './gameState';
 import LoginMenu from './menus/LoginMenu';
-import MainMenu from './menus/MainMenu';
 
 
 export type MenuProps = {
@@ -12,9 +12,8 @@ export type MenuProps = {
 const App: Component = () => {
   const [state, setState] = createSignal(createGameState());
   const [currentMenu, setCurrentMenu] = createSignal<Component<MenuProps>>(LoginMenu);
-
-
   const setMenu = menu => setCurrentMenu(() => menu)
+  createEffect(() => requestHandler.authToken = state()?.accountInfo()?.Token);
 
   const renderedMenu = createMemo(() => currentMenu()({state:state(), setMenu:setMenu}));
 
