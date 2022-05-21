@@ -1,6 +1,6 @@
 import IAccountInfo from "../types/accountInfo";
 import { createEndpoint } from "./endpoints"
 
-const Login = createEndpoint<{Token:string}, IAccountInfo >("api/user/current", params => params);
+const CurrentUser = createEndpoint<{}, IAccountInfo >("api/user/current", params => params, "GET");
 
-export default Login
+export default CurrentUser

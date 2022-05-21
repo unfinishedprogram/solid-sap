@@ -24,6 +24,6 @@ export type QueueResults = {
   Versus: null
 } 
 
-const Queue = createEndpoint<QueueParams, QueueResults>("api/arena/queue", params => params);
+const Queue = createEndpoint<QueueParams, QueueResults>("api/arena/queue", params => params, "POST");
 
 export default Queue

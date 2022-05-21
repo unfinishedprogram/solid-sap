@@ -8,14 +8,15 @@ const MainMenu:Component<MenuProps> = (props) => {
       props.setMenu(LoginMenu)
     }
   })
-  return <div>
+  
+  return <>
     <div>
       <span>{ props.state.accountInfo()?.DisplayName || "Guest" }</span>
       <button onclick={() => props.state.setAccountInfo()}>Logout</button>
-    </div>      
+    </div>
+
     <h1>Main Menu</h1>
-    <button onclick={() => props.setMenu(LoginMenu)}>Login</button>
-  </div>
+  </>
 }
 
 export default MainMenu

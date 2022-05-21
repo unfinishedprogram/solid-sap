@@ -4,9 +4,11 @@ import IAccountInfo from "./types/accountInfo";
 
 export default function createGameState() {
   const [accountInfo, setAccountInfo] = createSignal<IAccountInfo>();
+  const [sessionToken, setSessionToken] = createSignal<string>();
 
   return {
-    accountInfo, setAccountInfo
+    accountInfo, setAccountInfo,
+    sessionToken, setSessionToken
   }
 }
 

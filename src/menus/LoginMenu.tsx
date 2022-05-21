@@ -6,6 +6,7 @@ import Login from "../endpoints/login";
 import RegisterGuest from "../endpoints/registerGuest";
 import Spinner from "../components/Spinner";
 import MainMenu from "./MainMenu";
+import CurrentUser from "../endpoints/currentUser";
 
 const LoginMenu:Component<MenuProps> = (props) => {
   const [loading, setLoading] = createSignal<boolean>(false) 
@@ -31,8 +32,14 @@ const LoginMenu:Component<MenuProps> = (props) => {
     setError("")
     setLoading(true)
     requestHandler.executeRequest(RegisterGuest, {})
-      .then(() => {
-
+      .then((res) => {
+        requestHandler.authToken = res.Token;
+        requestHandler.executeRequest(CurrentUser, {})
+          .then(res => {
+            props.state.setAccountInfo(res);
+            props.setMenu(MainMenu)
+          })
+          .catch(handleError)
       })
       .catch(handleError)
       .finally(() => setLoading(false))
@@ -45,17 +52,28 @@ const LoginMenu:Component<MenuProps> = (props) => {
     }
   })
 
-  return <div>
+  const submit = (e:SubmitEvent) => {
+    e.preventDefault();
+    login()
+  }
+
+  return <>
     <h1>Login</h1>
-    <input ref={email} type="email" placeholder="email..."/>
-    <input ref={password} type="password" placeholder="password..."/>
-    <button onclick={login}>Login</button>
-    <button onclick={() => props.setMenu(RegisterMenu)}>Register</button>
-    <button onclick={guestLogin}>Play as Guest</button>
+    <form onsubmit={ submit }>
+      <input ref={ email } type="email" placeholder="email..."/>
+      <input ref={ password } type="password" placeholder="password..."/>
+      <div>
+        <input type="button" onclick={() => props.setMenu(RegisterMenu)} value="Register"/>
+        <input type="submit" value="Login" />
+      </div>
+      <input type="button" onclick={guestLogin} value="Play as Guest"/>
+    </form>
+
+    
       { getError() }
       { JSON.stringify(props.state.accountInfo()) }
       { loading() && <Spinner/> }
-  </div>
+  </>
 }
 
 export default LoginMenu

@@ -11,14 +11,14 @@ const RegisterMenu:Component<MenuProps> = (props) => {
     console.log("GuestLogin")
   }
 
-  return <div>
+  return <>
     <h1>Login</h1>
     <input type="text" placeholder="username..."/>
     <input type="password" placeholder="password..."/>
     <button onclick={login}>Login</button>
     <button onclick={() => props.setMenu(LoginMenu)}>Login</button>
     <button onclick={guestLogin}>Play as Guest</button>
-  </div>
+  </>
 }
 
 export default RegisterMenu

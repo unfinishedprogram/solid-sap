@@ -21,10 +21,12 @@ export default class RequestHandler {
   public async executeRequest<Params, Results>(endpoint:IEndpoint<Params, Results>, params:Params):Promise<Results> {
     const url = `${this.base_url}/${endpoint.url}`
     const body = endpoint.makeBody(params);
+    const method = endpoint.method;
+
     body["Version"] = this.game_version;
 
     return new Promise<Results>(async (res, rej) => {
-      const result = await this.executeFetch(url, body);
+      const result = await this.executeFetch(url, method, body);
       if(result.ok){
         res(await result.json());
       } else {
@@ -33,8 +35,7 @@ export default class RequestHandler {
     })
   }
 
-  private async executeFetch(url:string, body_content:any) {
-
+  private async executeFetch(url:string, method:"GET" | "POST", body_content:any) {
     const headers = {
       "accept": "*/*",
       "accept-language": "en-US,en;q=0.9",
@@ -46,13 +47,15 @@ export default class RequestHandler {
       "sec-fetch-site": "cross-site",
       "sec-gpc": "1",
     };
-    const method = "POST"
+
     const body = JSON.stringify(body_content);
 
     if(this.authToken) { 
       headers["authorization"] = `Bearer ${this.authToken}`
     }
 
-    return fetch(url, {headers, body, method});
+    console.log(headers)
+    if(method == "POST") return fetch(url, {headers, body, method});
+    if(method == "GET") return fetch(url, {headers, method});
   }
 }
