@@ -1,16 +1,27 @@
 :root {
+	all:initial;
+
+
 	font-family: Arial, Helvetica, sans-serif;
+
 
 	--surface-0: #111111;
 	--surface-1: #1E1E1E;
 	--surface-2: #2D2D2D;
 	--surface-3: #363636;
+	--surface-4: #474747;
 
 	--text-0: #E3E3E3;
 	--text-1: #979797;
+
 }
 
-body {
+* {
+	color:currentColor;
+}
+
+
+body {	
 	background-color: var(--surface-0);
 }
 
@@ -33,38 +44,18 @@ form {
 input {
 	padding: 0.5rem;
 	margin: 0.25rem;
+	border-radius: 0.2rem;
 	box-shadow: 1rem 1rem 1rem black;
 	background-color: var(--surface-2);
 	color: var(--text-0);
-	border: none;
-
+	border: 1px solid #fff5;
 }
 
-input:hover,
+input[type="button"]{ 
+	
+}
+
 input:focus {
 	outline: none;
-	/* border: 2px solid; */
-	border-bottom: 2px solid;
-	background-image: linear-gradient(to left, black 0%, white 100%) !important;
-	/* border-image: linear-gradient(to right, black 0%, white 100%) 1 100% ; */
-
-	/* border-left: 0px; */
-	/* border-right: 0px; */
-
-	/* border-image-outset: 0 50% 0 0; */
-	/* padding-bottom: calc(0.5rem - 2px) !important; */
+	background-color: var(--surface-4);
 }
-
-
-/* input[type="button"]:hover,
-input[type="submit"]:hover {
-	border-image: linear-gradient(to right, #00000000 0%, white 0%, white 100%, #00000000 50%, #00000000 100%);
-} */
-
-/* input[type="button"],
-input[type="submit"] {
-	padding: 0.5rem 1rem;
-} */
-
-
-

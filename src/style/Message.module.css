@@ -1,0 +1,31 @@
+.error { 
+
+}
+
+.info {
+
+}
+
+.message.warning {
+  --accent-color: rgb(255, 196, 85) !important;
+}
+
+.message {
+  --accent-color: white;
+  display: flex;
+  background:none;
+  box-shadow: 0px 0px 3px var(--accent-color), 0px 0px 3px var(--accent-color) inset;
+  border-color: var(--accent-color);
+  font-weight: bold;
+  font-size: large;
+  background-color: var(--surface-1);
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 100rem;
+}
+
+.message svg {
+  width: 2rem;
+  height: 2rem;
+}
+
