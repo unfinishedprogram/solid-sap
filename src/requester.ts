@@ -1,6 +1,5 @@
 import { IEndpoint } from "./endpoints/endpoints";
 
-
 interface IRequestError {
   "type": string,
   "title": string,
@@ -8,22 +7,28 @@ interface IRequestError {
   "traceId": string
 }
 
+
 export default class RequestHandler {
   private base_url:string;
-  private game_version: number = 18;
   public authToken = "";
-
-  set gameVersion(game_version:number) {
-    this.game_version = game_version;
-    this.base_url = `https://api.teamwood.games/0.${game_version}`;
+  private currentVersion = {
+    "Major":0,
+    "Minor":18,
+    "Patch":35,
+    "MinimumClientPatch":0
   }
 
+  public syncVersion() {
+    // this.currentVersion = await this.executeRequest(CurrentVersion, {})
+    this.base_url = `https://api.teamwood.games/${0}.${18}`;
+  }
+  
   public async executeRequest<Params, Results>(endpoint:IEndpoint<Params, Results>, params:Params):Promise<Results> {
     const url = `${this.base_url}/${endpoint.url}`
     const body = endpoint.makeBody(params);
     const method = endpoint.method;
 
-    body["Version"] = this.game_version;
+    body["Version"] = this.currentVersion.Minor;
 
     return new Promise<Results>(async (res, rej) => {
       const result = await this.executeFetch(url, method, body);
