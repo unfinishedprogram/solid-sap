@@ -58,8 +58,7 @@ export default class RequestHandler {
     if(this.authToken) { 
       headers["authorization"] = `Bearer ${this.authToken}`
     }
-
-    console.log(headers)
+    
     if(method == "POST") return fetch(url, {headers, body, method});
     if(method == "GET") return fetch(url, {headers, method});
   }

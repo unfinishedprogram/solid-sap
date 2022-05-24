@@ -1,4 +1,5 @@
 import IAbility from "./ability"
+import IItemId from "./itemId"
 
 export default interface IMinion {
   Owner: number
@@ -24,10 +25,7 @@ export default interface IMinion {
   Dead: boolean
   Destroyed: boolean
   DestroyedBy: null
-  Id: {
-    BoardId: string
-    Unique: number
-  }
-  Price: number,
+  Id: IItemId
+  Price: number
   Frozen: boolean
 }

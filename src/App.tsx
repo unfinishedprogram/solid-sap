@@ -1,4 +1,5 @@
 import { Component, createEffect, createMemo, createSignal } from 'solid-js';
+import BoundInput from './components/BoundInput';
 import state from './createState';
 import LoginMenu from './menus/LoginMenu';
 

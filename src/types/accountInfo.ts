@@ -1,7 +1,9 @@
+import IMatchState from "../game/matchState"
+
 export default interface IAccountInfo {
   Token: string
   Abandon: 0
-  ArenaMatch: null
+  ArenaMatch: null | IMatchState
   Background: 0
   Cosmetic: 0
   DeckId: null

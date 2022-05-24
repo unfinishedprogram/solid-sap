@@ -53,7 +53,6 @@ const LoginMenu:Component<MenuProps> = (props) => {
       <BoundInput value={email} type="email" placeholder="email..."/>
       <BoundInput value={password} type="password" placeholder="password..."/>
       <input type="button" onclick={guestLogin} value="Play as Guest"/>
-
       <div class={styles.buttons_container}>
         <input type="button" onclick={() => props.setMenu(RegisterMenu)} value="Register"/>
         <input type="submit" value="Login" />
