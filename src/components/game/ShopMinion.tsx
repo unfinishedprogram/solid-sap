@@ -7,6 +7,7 @@ import Minion from './Minion';
 interface IShopMinionProps {
   data:IMinion|null
   buildState:BuildState
+  select:(minion:IMinion) => void
 }
 
 const ShopMinion: Component<IShopMinionProps> = (props) => {
@@ -15,18 +16,8 @@ const ShopMinion: Component<IShopMinionProps> = (props) => {
     return `${style.item} ${props.buildState.selectedShopItem() == props.data.Id ? style.selected : ""}`
   })
 
-  const click = () => {
-    props.buildState.setSelectedShopItem((prev) => {
-      if(prev == props.data.Id){
-        return null;
-      } else {
-        return props.data.Id
-      }
-    })
-  }
-
   return (
-    <div class={classes()} onclick={click}>
+    <div class={classes()} onclick={() => props.select(props.data)}>
       <Minion data={props.data} buildState={props.buildState} />
     </div>
   )

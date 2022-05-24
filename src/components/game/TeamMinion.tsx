@@ -8,6 +8,7 @@ interface ITeamMinionProps {
   data:IMinion|null
   buildState:BuildState
   index:number
+  select:(index:number) => void
 }
 
 const TeamMinion: Component<ITeamMinionProps> = (props) => {
@@ -15,19 +16,9 @@ const TeamMinion: Component<ITeamMinionProps> = (props) => {
   const classes = createMemo(() => {
     return `${style.item} ${props.buildState.selectedTeamMinion() == props.index ? style.selected : ""}`
   })
-  
-  const click = () => {
-    props.buildState.setSelectedTeamMinion((prev) => {
-      if(prev == props.index){
-        return null;
-      } else {
-        return props.index
-      }
-    })
-  }
 
   return (
-    <div class={classes()} onclick={click}>
+    <div class={classes()} onclick={() => props.select(props.index)}>
       <Minion data={props.data} buildState={props.buildState} />
     </div>
   )

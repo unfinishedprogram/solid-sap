@@ -3,12 +3,12 @@ import { createEndpoint } from "../endpoints"
 import IActionResponse from "../../types/actionResponse";
 import IMoveData from "../../types/moveData";
 
-interface IPlayMinionParams {
-  MinionId: IItemId;
+interface IPlaySpellParams {
+  SpellId: IItemId;
   Point:{x:number, y:number};
   Data:IMoveData;
 }
 
-const PlayMinion = createEndpoint<IPlayMinionParams, IActionResponse >("api/build/play-minion", params => params, "POST");
+const PlaySpell = createEndpoint<IPlaySpellParams, IActionResponse >("api/build/play-spell", params => params, "POST");
 
-export default PlayMinion
+export default PlaySpell

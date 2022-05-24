@@ -1,29 +1,10 @@
-import IBuild from "../types/build"
+import { IMatch } from "../game/matchState";
 import { createEndpoint } from "./endpoints"
 
 export type QueueParams = {
   SamePack: boolean
 }
 
-export type QueueResults = {
-  MatchId: string
-  ParticipationId: string
-  Build: IBuild
-  BattleId: null
-  BattleWatchedOn: null
-  MatchState: number
-  Ready: false
-  Players: number
-  PlayersMax: number
-  Private: boolean
-  Version: number
-  Kicked: null
-  CreatorUserId: null
-  Mode: number
-  Arena: unknown
-  Versus: null
-} 
-
-const QueueArena = createEndpoint<QueueParams, QueueResults>("api/arena/queue", params => params, "POST");
+const QueueArena = createEndpoint<QueueParams, IMatch>("api/arena/queue", params => params, "POST");
 
 export default QueueArena

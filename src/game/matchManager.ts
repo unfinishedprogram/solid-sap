@@ -1,27 +1,27 @@
-import IMatchState from "./matchState";
-import { Signal, Accessor, Setter} from "solid-js";
 import RequestHandler from "../requester";
 import IMoveData, { IBoardFreezes, IBoardOrders } from "../types/moveData";
 import BuildStart from "../endpoints/match/buildStart";
 import PlayMinion from "../endpoints/match/playMinion";
 import IItemId from "../types/itemId";
-import CurrentUser from "../endpoints/currentUser";
 import BuildRoll from "../endpoints/match/buildRoll";
 import ChoseName from "../endpoints/match/choseName";
 import ISpell from "../types/spell";
 import IMinion from "../types/minion";
+import { IMatch, ReactiveMatch } from "./matchState";
+import CurrentUser from "../endpoints/currentUser";
+import PlaySpell from "../endpoints/match/playSpell";
+import BuildEnd from "../endpoints/match/buildEnd";
+import ArenaReady from "../endpoints/match/arenaReady";
+import ArenaWatch from "../endpoints/match/arenaWatch";
 
 export default class MatchManager {
-
-  private getState:Accessor<IMatchState>;
-  private setState:Setter<IMatchState>;
-  
   private boardHash = 0;
-  private started = false;
+
+  constructor(private handler:RequestHandler, private match:ReactiveMatch){}
 
   private get boardFreezes():IBoardFreezes {
-    const spells = this.getState().Build.Board.SpellShop;
-    const minions = this.getState().Build.Board.MinionShop;
+    const spells = this.match.Build.Board.SpellShop();
+    const minions = this.match.Build.Board.MinionShop();
 
     const convert = (item:ISpell | IMinion) => {
       return  {ItemId:item.Id, Freeze:item.Frozen}
@@ -31,7 +31,7 @@ export default class MatchManager {
   }
 
   private get boardOrders():IBoardOrders {
-    const minions = this.getState().Build.Board.Minions.Items.filter((item) => item);
+    const minions = this.match.Build.Board.Minions().filter((item) => item);
 
     const convert = (item:IMinion) => {
       return {
@@ -48,28 +48,58 @@ export default class MatchManager {
       BoardFreezes:this.boardFreezes,
       BoardHash:this.boardHash,
       BoardOrders:this.boardOrders,
-      BuildId:this.getState().Build.Id,
+      BuildId:this.match.Build.Id(),
     }
   }
 
   private async update() {
     const res = await this.handler.executeRequest(CurrentUser, {});
-    if(res.ArenaMatch){
-      this.setState(res.ArenaMatch)
-    }
+    if(res.ArenaMatch) this.updateMatch(res.ArenaMatch);
   }
 
-  constructor(private handler:RequestHandler, private state:Signal<IMatchState>) {
-    [this.getState, this.setState] = state;
+  public updateMatch(newMatch:IMatch) {
+    const board = this.match.Build.Board;
+    const newBoard = newMatch.Build.Board;
+    
+    board.setGold(newBoard.Gold);
+    board.setHash(newBoard.Hash);
+    board.setLosses(newBoard.Losses);
+    board.setLossPoints(newBoard.LossPoints);
+    board.setMinionShop(newBoard.MinionShop);
+    board.setMinionShopAttackBonus(newBoard.MinionShopAttackBonus);
+    board.setMinionShopHealthBonus(newBoard.MinionShopHealthBonus);
+    board.setMinionShopCapacity(newBoard.MinionShopCapacity);
+    board.setMinions(newBoard.Minions.Items);
+    board.setSpellShop(newBoard.SpellShop);
+    board.setTier(newBoard.Tier);
+    board.setTurn(newBoard.Turn);
+    board.setVictories(newBoard.Victories);
   }
 
   public async startBuild() {
-    if(this.started) {
-      return;
-    }
-    this.started = true;
     const res = await this.handler.executeRequest(BuildStart, {Data:this.moveData})
     this.boardHash = res.Data.Hash;
+  }
+
+  public async endTurn() {
+    const res = await this.handler.executeRequest(BuildEnd, {Data:this.moveData});
+
+    this.boardHash = res.Data.Hash;
+
+    if(this.match.Build.Board.Turn() < 1){
+      await this.handler.executeRequest(ChoseName, {
+        Data:this.moveData,
+        Adjective:this.match.Build.AvailableAdjectives()[0],
+        Noun:this.match.Build.AvailableNouns()[0],
+      });
+    }
+
+    await this.handler.executeRequest(ArenaReady, {ParticipationId:this.match.ParticipationId})
+    await this.handler.executeRequest(ArenaWatch, {ParticipationId:this.match.ParticipationId})
+
+    await this.startBuild();
+    
+    this.update();
   }
 
   public async playMinion(id:IItemId, position:number) {
@@ -79,7 +109,19 @@ export default class MatchManager {
       Point: {
         x:position, y:0
       }
-    }) 
+    })
+    this.boardHash = res.Data.Hash;
+    this.update()
+  }
+
+  public async playSpell(id:IItemId, position:number) {
+    const [x, y] = [position, 0];
+    const res = await this.handler.executeRequest(PlaySpell, {
+      Data:this.moveData,
+      SpellId: id,
+      Point: { x, y }
+    })
+
     this.boardHash = res.Data.Hash;
     this.update()
   }
@@ -87,7 +129,7 @@ export default class MatchManager {
   public async rollShop() {
     const res = await this.handler.executeRequest(BuildRoll, {Data:this.moveData})
     this.boardHash = res.Data.Hash;
-    this.update()
+    await this.update()
   }
 
   public async choseName(adjective:string, noun:string) {
@@ -99,14 +141,13 @@ export default class MatchManager {
   }
 
   public movePet(p1:number, p2:number) {
-    console.log(p1, p2)
-    const items = this.getState().Build.Board.Minions.Items;
-    [items[p1], items[p2]] = [items[p2], items[p1]] 
+    const items = [ ...this.match.Build.Board.Minions() ];
+    [items[p1], items[p2]] = [items[p2], items[p1]];
 
-    items.forEach((item, index) =>{
+    items.forEach((item, index) => {
       if(item) item.Point.x = index;
     })
-    
-    this.setState(this.getState())
+
+    this.match.Build.Board.setMinions(items);
   }
 }

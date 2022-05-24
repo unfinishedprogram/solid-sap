@@ -1,5 +1,5 @@
 import IBoardHashData from "../../types/boardHashData";
-import { IMoveData } from "../../types/moveData";
+import IMoveData from "../../types/moveData";
 import { createEndpoint } from "../endpoints"
 
 interface IChoseNameParams {
@@ -8,7 +8,6 @@ interface IChoseNameParams {
   Noun:string,
 }
 
-interface IChoseNameReturns {};
 
 const ChoseName = createEndpoint<IChoseNameParams,  {}>("api/build/name", params => params, "POST");
 

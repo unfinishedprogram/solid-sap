@@ -5,6 +5,7 @@ import LoginMenu from "./LoginMenu";
 import iconStyles from "../style/Icon.module.css"
 import QueueArena from "../endpoints/queueArena";
 import GameMenu from "./GameMenu";
+import { createReactiveMatch } from "../game/matchState";
 
 const MainMenu:Component<MenuProps> = (props) => {
   createEffect(() => {
@@ -16,8 +17,7 @@ const MainMenu:Component<MenuProps> = (props) => {
   const queueArena = () => {
     props.state.requestHandler.executeRequest(QueueArena, {SamePack:true})
       .then((res) => {
-        console.log(res)
-        props.state.setMatchState(res)
+        props.state.setMatchState(createReactiveMatch(res))
         props.setMenu(GameMenu)
       })
   }

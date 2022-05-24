@@ -30,6 +30,7 @@ export default class RequestHandler {
 
     body["Version"] = this.currentVersion.Minor;
 
+    console.log(endpoint, body)
     return new Promise<Results>(async (res, rej) => {
       const result = await this.executeFetch(url, method, body);
       if(result.ok){
