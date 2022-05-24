@@ -13,11 +13,8 @@ interface IShopSpellProps {
 const ShopSpell: Component<IShopSpellProps> = (props) => {
 
   const classes = createMemo(() => {
-    return `${style.item} ${props.buildState.selectedShopItem() == props.data.Id ? style.selected : ""}`
+    return `${style.item} ${props.buildState.selectedShopItem() == props.data ? style.selected : ""}`
   })
-  
-  const click = () => {
-  }
 
   return (
     <div class={classes()} onclick={() => props.select(props.data)}>

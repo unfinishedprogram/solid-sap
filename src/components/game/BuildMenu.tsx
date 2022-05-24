@@ -1,4 +1,4 @@
-import { Component, createEffect, createSignal, For, Match, Signal } from "solid-js";
+import { Component, createEffect, createSignal, For, Match, Show, Signal } from "solid-js";
 import MatchManager from "../../game/matchManager";
 import { IMatch, ReactiveMatch } from "../../game/matchState";
 import style from "../../style/Match.module.css";
@@ -16,8 +16,10 @@ interface IBuildMenuProps {
 
 type ShopItemType = "spell" | "minion" | null; 
 
+type IShopItem = (IMinion | ISpell);
+
 function createBuildState() {
-  const [selectedShopItem, setSelectedShopItem] = createSignal<IItemId>(null);
+  const [selectedShopItem, setSelectedShopItem] = createSignal<IShopItem>(null);
   const [selectedTeamMinion, setSelectedTeamMinion] = createSignal<number>(null);
   const [selectedShopItemType, setSelectedShopItemType] = createSignal<ShopItemType>(null);
   return {
@@ -37,36 +39,45 @@ const BuildMenu:Component<IBuildMenuProps> = (props) => {
   
   props.manager.startBuild()
 
-  const selectShopItem = (id:IItemId) => {
-    if(buildState.selectedShopItem()?.Unique == id.Unique){
+  const selectShopItem = (item:IShopItem) => {
+    if(buildState.selectedShopItem()?.Id.Unique == item.Id.Unique){
       buildState.setSelectedShopItem(null);
     } else {
-      buildState.setSelectedShopItem(id);
+      buildState.setSelectedShopItem(item);
     }
     buildState.setSelectedTeamMinion(null);
   }
 
   const selectShopSpell = (spell:ISpell) => {
-    selectShopItem(spell.Id)
+    selectShopItem(spell)
     buildState.setSelectedShopItemType("spell");
   }
 
   const selectShopMinion = (minion:IMinion) => {
-    selectShopItem(minion.Id)
+    selectShopItem(minion)
     buildState.setSelectedShopItemType("minion");
   }
   
   const selectTeamMinion = (index:number) => {
-    if(buildState.selectedTeamMinion() == index) {
+    const oldIndex = buildState.selectedTeamMinion();
+    const newIndex = index;
+
+    const oldPet = match().Build.Board.Minions()[oldIndex];
+    const newPet = match().Build.Board.Minions()[newIndex];
+
+    if(oldIndex == index) {
       buildState.setSelectedTeamMinion(null)
-    } else if (buildState.selectedTeamMinion() != null) {
-      props.manager.movePet(buildState.selectedTeamMinion(), index);
+    } else if (oldIndex != null) {
+      if(oldPet?.Enum == newPet?.Enum && (newPet.Level != 3) && (oldPet.Level != 3)){
+          props.manager.stackMinions(oldPet, newPet);
+      }
+      props.manager.movePet(oldIndex, newIndex);
       buildState.setSelectedTeamMinion(null)
     } else if (buildState.selectedShopItem() != null) {
       if(buildState.selectedShopItemType() == "minion") {
-        props.manager.playMinion(buildState.selectedShopItem(), index);
+        props.manager.playMinion(buildState.selectedShopItem().Id, index);
       } else if (buildState.selectedShopItemType() == "spell") {
-        props.manager.playSpell(buildState.selectedShopItem(), index);
+        props.manager.playSpell(buildState.selectedShopItem().Id, index);
       }
       buildState.setSelectedShopItem(null)
       buildState.setSelectedTeamMinion(null)
@@ -77,19 +88,12 @@ const BuildMenu:Component<IBuildMenuProps> = (props) => {
     }
   }
 
-  createEffect(() => {
-    if(buildState.selectedTeamMinion() != null) {
-      if(buildState.selectedShopItem()) {
-        props.manager.playMinion(buildState.selectedShopItem(), buildState.selectedTeamMinion());
-      }
+  const toggleFrozen = () => {
+    if(buildState.selectedShopItem()) {
+      props.manager.toggleFrozen(buildState.selectedShopItem());
+      buildState.setSelectedShopItem(null);
     }
-  })
-  
-  createEffect(() => {
-    if(buildState.selectedShopItem()){
-      buildState.setSelectedTeamMinion(null);
-    }
-  })
+  }
 
   return (
     <div class={style.buildMenu}>
@@ -126,7 +130,10 @@ const BuildMenu:Component<IBuildMenuProps> = (props) => {
       </div>
       <div class={style.buttons}>
         <button onclick={() => props.manager.rollShop()}>Roll</button>
-        <button>Freeze</button>
+        <Show when={buildState.selectedShopItem()}>
+          <button onclick={toggleFrozen}>{buildState.selectedShopItem().Frozen ? "Unfreeze" : "Freeze"}</button>
+
+        </Show>
         <button>Sell</button>
         <button onclick={() => props.manager.endTurn()}>End Turn</button>
       </div>

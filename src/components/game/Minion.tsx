@@ -1,4 +1,4 @@
-import { Component} from 'solid-js';
+import { Component, Show} from 'solid-js';
 import IMinion from '../../types/minion';
 import minions from '../../data/minions'
 import style from "../../style/Match.module.css";
@@ -14,9 +14,12 @@ const Minion: Component<IMinionProps> = (props) => {
   const imgSrc = `images/${petName[0].toUpperCase() + petName.substring(1)}.png`
 
   if(props.data) {
-    return (
-      <span class={style.minion}>
-        <img alt={petName} src={imgSrc}/>
+    return (<>
+        <Show when={props.data.Frozen}>
+          <img class={style.ice} src="images/ice.png"></img>
+        </Show>
+        <span class={style.minion}>
+        <img class={style.minion_pic} alt={petName} src={imgSrc}/>
         <div class={style.stats}>
           <span>
             {props.data.Attack.Permanent + props.data.Attack.Temporary}
@@ -26,6 +29,9 @@ const Minion: Component<IMinionProps> = (props) => {
           </span>
         </div>
       </span>
+    </>
+      
+
     )
   } else {
     return <>Empty</>

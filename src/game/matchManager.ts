@@ -13,6 +13,7 @@ import PlaySpell from "../endpoints/match/playSpell";
 import BuildEnd from "../endpoints/match/buildEnd";
 import ArenaReady from "../endpoints/match/arenaReady";
 import ArenaWatch from "../endpoints/match/arenaWatch";
+import StackMinion from "../endpoints/match/stackMinion";
 
 export default class MatchManager {
   private boardHash = 0;
@@ -41,6 +42,40 @@ export default class MatchManager {
     }
     
     return minions.map(convert);
+  }
+
+  public toggleFrozen(item:(IMinion | ISpell)) {
+
+    let shopSpells = [...this.match.Build.Board.SpellShop()];
+    let shopMinions = [...this.match.Build.Board.MinionShop()];
+
+    let copy: (IMinion | ISpell) = {} as (IMinion | ISpell);
+
+    Object.assign(copy, item);
+    
+    if(item) {
+      copy.Frozen = !copy.Frozen;
+    }
+
+
+    if(shopMinions.includes(item as IMinion)){
+      shopMinions[shopMinions.indexOf(item as IMinion)] = copy as IMinion; 
+      this.match.Build.Board.setMinionShop(shopMinions)
+
+    } else if (shopSpells.includes(item as ISpell)) {
+      shopSpells[shopSpells.indexOf(item as ISpell)] = copy as ISpell; 
+      this.match.Build.Board.setSpellShop(shopSpells)
+    }
+  }
+  
+  public async stackMinions(source:IMinion, target:IMinion) {
+    const res = await this.handler.executeRequest(StackMinion, {
+      Data:this.moveData,
+      SourceMinionId:source.Id, 
+      TargetMinionId:target.Id
+    })
+    this.boardHash = res.Data.Hash;
+    this.update();
   }
 
   private get moveData():IMoveData {
@@ -110,6 +145,7 @@ export default class MatchManager {
         x:position, y:0
       }
     })
+    
     this.boardHash = res.Data.Hash;
     this.update()
   }

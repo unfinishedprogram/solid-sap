@@ -13,7 +13,7 @@ interface IShopMinionProps {
 const ShopMinion: Component<IShopMinionProps> = (props) => {
 
   const classes = createMemo(() => {
-    return `${style.item} ${props.buildState.selectedShopItem() == props.data.Id ? style.selected : ""}`
+    return `${style.item} ${props.buildState.selectedShopItem() == props.data ? style.selected : ""}`
   })
 
   return (

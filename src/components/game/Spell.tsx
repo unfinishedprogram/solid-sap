@@ -1,4 +1,4 @@
-import { Component} from 'solid-js';
+import { Component, Show} from 'solid-js';
 import spells from '../../data/spells';
 import ISpell from '../../types/spell';
 import style from "../../style/Match.module.css";
@@ -12,8 +12,12 @@ interface ISpellProps {
 const Spell: Component<ISpellProps> = (props) => {
   const spellName = spells[props.data?.Enum] || "None";
   const imgSrc = `images/${spellName[0].toUpperCase() + spellName.substring(1)}.png`
-  return (
-    <img alt={spellName} src={imgSrc} />
+  return (<>
+      <img alt={spellName} src={imgSrc} />
+      <Show when={props.data.Frozen}>
+        <img class={style.ice} src="images/ice.png"></img>
+      </Show>
+    </>
   )
 }
 
