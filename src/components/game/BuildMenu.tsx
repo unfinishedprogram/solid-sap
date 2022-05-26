@@ -1,7 +1,7 @@
 import { Component, createEffect, createSignal, For, Match, Show, Signal } from "solid-js";
 import MatchManager from "../../game/matchManager";
 import { IMatch, ReactiveMatch } from "../../game/matchState";
-import style from "../../style/Match.module.css";
+import style from "../../style/Match.module.scss";
 import IItemId from "../../types/itemId";
 import IMinion from "../../types/minion";
 import ISpell from "../../types/spell";
@@ -35,7 +35,7 @@ const BuildMenu:Component<IBuildMenuProps> = (props) => {
   
   const buildState = createBuildState();
 
-  const match = props.match[0]
+  const match = props.match[0];
   
   props.manager.startBuild()
 

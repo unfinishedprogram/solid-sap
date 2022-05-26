@@ -1,5 +1,5 @@
 import { Component, JSXElement, Switch, Match } from "solid-js";
-import styles from "../style/Message.module.css";
+import styles from "../style/Message.module.scss";
 import Icon from "./Icon";
 
 interface IMessageProps {

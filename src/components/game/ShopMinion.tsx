@@ -1,6 +1,6 @@
-import { Component, createMemo} from 'solid-js';
+import { Component, createMemo, Show} from 'solid-js';
 import IMinion from '../../types/minion';
-import style from "../../style/Match.module.css";
+import style from "../../style/Match.module.scss";
 import { BuildState } from './BuildMenu';
 import Minion from './Minion';
 
@@ -16,11 +16,14 @@ const ShopMinion: Component<IShopMinionProps> = (props) => {
     return `${style.item} ${props.buildState.selectedShopItem() == props.data ? style.selected : ""}`
   })
 
-  return (
+  return <div>
+    <Show when={props.data.Frozen}>
+      <img class={style.ice} src="images/ice.png"></img>
+    </Show>
     <div class={classes()} onclick={() => props.select(props.data)}>
       <Minion data={props.data} buildState={props.buildState} />
     </div>
-  )
+  </div>
 }
 
 export default ShopMinion;

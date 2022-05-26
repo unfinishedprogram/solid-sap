@@ -1,6 +1,6 @@
 import { Component, createMemo} from 'solid-js';
 import IMinion from '../../types/minion';
-import style from "../../style/Match.module.css";
+import style from "../../style/Match.module.scss";
 import { BuildState } from './BuildMenu';
 import Minion from './Minion';
 
