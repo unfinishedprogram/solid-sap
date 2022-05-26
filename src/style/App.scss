@@ -3,21 +3,20 @@
 	src: url(../assets/fonts/Montserrat.ttf);
 }
 
-
 * {
 	color:currentColor;
 	font-family: Montserrat, ariel Helvetica, sans-serif;
 }
 
 body {	
-	background-color: $surface-0;
+	background-color: var(--surface-0);
 }
 
 #root {
 	display: flex;
 	align-items: center;
 	flex-direction: column;	
-	color: $text-0;
+	color: var(--text-0);
 }
 
 h1 {
@@ -34,8 +33,8 @@ input {
 	padding: 0.5rem;
 	margin: 0.25rem;
 	border-radius: 0.2rem;
-	background-color: $surface-2;
-	color: $text-0;
+	background-color: var(--surface-2);
+	color: var(--text-1);
 	border: 1px solid #fff5;
 }
 
@@ -71,5 +70,5 @@ input[type="submit"]:hover {
 
 input:focus {
 	outline: none;
-	background-color: $surface-4;
+	background-color: var(--surface-4);
 }
