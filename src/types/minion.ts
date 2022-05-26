@@ -16,8 +16,8 @@ export default interface IMinion {
     Temporary: number
   },
   Attack: {
-    Permanent: 1
-    Temporary: 0
+    Permanent: number
+    Temporary: number
   },
   Perk: null
   Abilities: IAbility[]

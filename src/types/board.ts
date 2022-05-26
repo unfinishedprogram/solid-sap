@@ -22,7 +22,7 @@ export default interface IBoard {
       x: 5,
       y: 1
     },
-    Items: (IMinion|null)[]
+    Items: (IMinion|undefined)[]
   },
 
   MinionShopCapacity: number

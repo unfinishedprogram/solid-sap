@@ -1,5 +1,6 @@
 import IBuild from "../types/build"
 import createReactiveBuild, { ReactiveBuild } from "./buildState";
+import { createStore } from "solid-js/store";
 
 export interface IMatch {
     "MatchId": string,
@@ -40,9 +41,8 @@ export interface ReactiveMatch {
 }
 
 export function createReactiveMatch(baseState:IMatch) {
-    const baseBuild = baseState.Build;
-    const state = (baseState as unknown as  ReactiveMatch);
-    state.Build = createReactiveBuild(baseBuild);
-    return state;
+    const [match, setMatch] = createStore(baseState);
+    return {match, setMatch};
 }
 
+export type MatchStore = ReturnType<typeof createReactiveMatch>;

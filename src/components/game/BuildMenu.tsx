@@ -1,6 +1,7 @@
 import { Component, createEffect, createSignal, For, Match, Show, Signal } from "solid-js";
+import { createMutable } from "solid-js/store";
 import MatchManager from "../../game/matchManager";
-import { IMatch, ReactiveMatch } from "../../game/matchState";
+import { MatchStore } from "../../game/matchState";
 import style from "../../style/Match.module.scss";
 import IItemId from "../../types/itemId";
 import IMinion from "../../types/minion";
@@ -11,7 +12,7 @@ import TeamMinion from "./TeamMinion";
 
 interface IBuildMenuProps {
   manager: MatchManager
-  match: Signal<ReactiveMatch>
+  match: MatchStore
 }
 
 type ShopItemType = "spell" | "minion" | null; 
@@ -35,7 +36,8 @@ const BuildMenu:Component<IBuildMenuProps> = (props) => {
   
   const buildState = createBuildState();
 
-  const match = props.match[0];
+  // const matchState = props.match[0]();
+  const [match, setMatch] = [props.match.match, props.match.setMatch];
   
   props.manager.startBuild()
 
@@ -62,8 +64,8 @@ const BuildMenu:Component<IBuildMenuProps> = (props) => {
     const oldIndex = buildState.selectedTeamMinion();
     const newIndex = index;
 
-    const oldPet = match().Build.Board.Minions()[oldIndex];
-    const newPet = match().Build.Board.Minions()[newIndex];
+    const oldPet = match.Build.Board.Minions.Items[oldIndex];
+    const newPet = match.Build.Board.Minions.Items[newIndex];
 
     if(oldIndex == index) {
       buildState.setSelectedTeamMinion(null)
@@ -82,7 +84,7 @@ const BuildMenu:Component<IBuildMenuProps> = (props) => {
       buildState.setSelectedShopItem(null)
       buildState.setSelectedTeamMinion(null)
     } else {
-      if(match().Build.Board.Minions()[index]){
+      if(match.Build.Board.Minions.Items[index]){
         buildState.setSelectedTeamMinion(index)
       }
     }
@@ -98,13 +100,13 @@ const BuildMenu:Component<IBuildMenuProps> = (props) => {
   return (
     <div class={style.buildMenu}>
       <div class={style.header}>
-        <span>Gold: {match().Build.Board.Gold}</span>
-        <span>Lives: {match().Build.Board.LivesMax() - match().Build.Board.LossPoints()}</span>
+        <span>Gold: {match.Build.Board.Gold}</span>
+        <span>Lives: {match.Build.Board.LivesMax - match.Build.Board.LossPoints}</span>
       </div>
       <div>
         <h2>Your Team</h2>
         <div class={style.itemList}>
-          <For each={match().Build.Board.Minions()} >
+          <For each={match.Build.Board.Minions.Items} >
             {(item, index) => <TeamMinion index={index()} select={selectTeamMinion} data={item} buildState={buildState} />}
           </For>
         </div>
@@ -114,7 +116,7 @@ const BuildMenu:Component<IBuildMenuProps> = (props) => {
       <div>
         <h2>Shop Pets</h2>
         <div class={style.itemList}>
-          <For each={match().Build.Board.MinionShop()} >
+          <For each={match.Build.Board.MinionShop} >
             {(item, index) => <ShopMinion data={item} select={selectShopMinion} buildState={buildState}/>}
           </For>
         </div>
@@ -122,7 +124,7 @@ const BuildMenu:Component<IBuildMenuProps> = (props) => {
       <div>
         <h2>Shop Food</h2>
         <div class={style.itemList}>
-          <For each={match().Build.Board.SpellShop()} >
+          <For each={match.Build.Board.SpellShop} >
             {(item, index) => <ShopSpell data={item} select={selectShopSpell} buildState={buildState}/>}
           </For>
         </div>

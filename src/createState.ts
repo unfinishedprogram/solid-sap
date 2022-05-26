@@ -1,7 +1,7 @@
 import { createSignal } from "solid-js";
 import AuthManager, { IAuthState } from "./authManager";
 import MatchManager from "./game/matchManager";
-import { IMatch, ReactiveMatch } from "./game/matchState";
+import { MatchStore } from "./game/matchState";
 import RequestHandler from "./requester";
 
 
@@ -9,7 +9,7 @@ function createState() {
   const requestHandler = new RequestHandler();
 
   const [authState, setAuthState] = createSignal<IAuthState>()
-  const [matchState, setMatchState] = createSignal<ReactiveMatch>();
+  const [matchState, setMatchState] = createSignal<MatchStore>();
 
   requestHandler.syncVersion();
 

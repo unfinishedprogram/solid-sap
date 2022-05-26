@@ -3,11 +3,12 @@ import IMinion from '../../types/minion';
 import style from "../../style/Match.module.scss";
 import { BuildState } from './BuildMenu';
 import Minion from './Minion';
+import { DeepReadonly } from 'solid-js/store';
 
 interface IShopMinionProps {
-  data:IMinion|null
+  data:DeepReadonly<IMinion>|null
   buildState:BuildState
-  select:(minion:IMinion) => void
+  select:(minion:DeepReadonly<IMinion>) => void
 }
 
 const ShopMinion: Component<IShopMinionProps> = (props) => {

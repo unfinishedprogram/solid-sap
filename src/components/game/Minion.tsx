@@ -1,11 +1,12 @@
-import { Component, Show} from 'solid-js';
+import { Component, createMemo, Show} from 'solid-js';
 import IMinion from '../../types/minion';
 import minions from '../../data/minions'
 import style from "../../style/Match.module.scss";
 import { BuildState } from './BuildMenu';
+import { DeepReadonly } from 'solid-js/store';
 
 interface IMinionProps {
-  data:IMinion|null
+  data:DeepReadonly<IMinion>|null
   buildState:BuildState
 }
 
@@ -13,23 +14,25 @@ const Minion: Component<IMinionProps> = (props) => {
   const petName = minions[props.data?.Enum] || "None";
   const imgSrc = `images/${petName[0].toUpperCase() + petName.substring(1)}.png`
 
-  if(props.data) {
+  const attack = createMemo(() => props.data?.Attack?.Permanent + props.data?.Attack?.Temporary)
+  const health = createMemo(() => props.data?.Health?.Permanent + props.data?.Health?.Temporary)
+
+  if(props.data?.Owner) {
     return <>
-
-
       <span class={`${style.item} ${style.minion}`}>
         <div class={style.level}>
           LVL:{props.data.Level}
           EXP:{props.data.Exp}
         </div>
         
-        <img class={style.pic} alt={petName} src={imgSrc}/>
+        <img class={`${style.pic}`} alt={petName} src={imgSrc}/>
+
         <div class={style.stats}>
           <span>
-            {props.data.Attack.Permanent + props.data.Attack.Temporary}
+            {attack}
           </span>
           <span>
-            {props.data.Health.Permanent + props.data.Health.Temporary}
+            {health}
           </span>
         </div>
       </span>

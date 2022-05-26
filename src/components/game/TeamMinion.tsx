@@ -3,9 +3,10 @@ import IMinion from '../../types/minion';
 import style from "../../style/Match.module.scss";
 import { BuildState } from './BuildMenu';
 import Minion from './Minion';
+import { DeepReadonly } from 'solid-js/store';
 
 interface ITeamMinionProps {
-  data:IMinion|null
+  data:DeepReadonly<IMinion>|null
   buildState:BuildState
   index:number
   select:(index:number) => void
